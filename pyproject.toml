@@ -1,0 +1,10 @@
+[project]
+name = "pubquiztrainer"
+version = "0.1.0"
+description = "Pub Quiz Training."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests>=2.32.5",
+    "schedule>=1.2.2",
+]

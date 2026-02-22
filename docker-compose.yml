@@ -1,0 +1,38 @@
+services:
+  waha:
+    image: devlikeapro/waha:arm
+    container_name: waha-engine
+    restart: always
+    env_file: .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./sessions:/app/.sessions
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/sessions"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - WAHA_SESSIONS_DEFAULT_STARTUP=true 
+      - WAHA_SESSIONS_DEFAULT_RECONNECT=true 
+      - WAHA_DASHBOARD_USERNAME=admin
+
+  quiz-bot:
+    build: .
+    container_name: quiz-bot
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1  
+      # This overrides the localhost default in your code
+      # - WAHA_URL=http://waha:3000/api/sendText
+      - WAHA_API_KEY=${WAHA_API_KEY}
+      - WHATSAPP_GROUP_ID=${WHATSAPP_GROUP_ID}
+    healthcheck:
+      test: ["CMD-SHELL", "find /tmp/heartbeat -mmin -2 | grep . || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - waha

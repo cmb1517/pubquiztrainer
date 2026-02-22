@@ -1,0 +1,1 @@
+A mildly over-engineered, mission-critical Pub Quiz Training Bot that fetches questions from the Open Trivia DB API, pipes them through a Python backend, and deploys them via a WAHA-powered WhatsApp integration—because nothing says “we’re here to win” like distributed trivia delivery infrastructure and an unhealthy commitment to pub supremacy. 🍻
