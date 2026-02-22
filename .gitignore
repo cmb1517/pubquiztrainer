@@ -1,0 +1,5 @@
+.env
+sessions/
+today.json
+.venv/
+__pycache__/
