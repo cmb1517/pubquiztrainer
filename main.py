@@ -18,7 +18,7 @@ def run_task(task_func, name):
 
 if __name__ == "__main__":
     logger.info("Pub Quiz Bot Scheduler started... 🚀")
-    logger.info("Mode: Every 2 hours (Answer 30 mins later)")
+    logger.info("Mode: Question every 2 hours (Answer 30 mins later)")
 
     schedule.every(2).hours.at(":00").do(run_task, question.main, "Question")
     schedule.every(2).hours.at(":30").do(run_task, answer.main, "Answer")
