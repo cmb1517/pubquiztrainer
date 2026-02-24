@@ -18,9 +18,10 @@ def run_task(task_func, name):
 
 if __name__ == "__main__":
     logger.info("Quiz Bot Scheduler started... 🚀")
+    logger.info("Mode: Every 2 hours (Answer 30 mins later)")
 
-    schedule.every().day.at("08:57").do(run_task, question.main, "Daily Question")
-    schedule.every().day.at("08:58").do(run_task, answer.main, "Daily Answer")
+    schedule.every(2).hours.at(":00").do(run_task, question.main, "Question")
+    schedule.every(2).hours.at(":30").do(run_task, answer.main, "Answer")
 
     while True:
         try:

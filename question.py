@@ -41,7 +41,7 @@ def main():
         f"*{quiz['question']}*\n\n"
         f"{quiz['formatted_options_text']}\n\n"
         f"--- \n"
-        f"Reply with your guess! The answer will be revealed in 1 hour. 🕒"
+        f"Reply with your guess! The answer will be revealed in 30 minutes. 🕒"
     )
 
     send_message(message)

@@ -6,11 +6,6 @@ from logger import setup_logger
 
 logger = setup_logger("whatsapp")
 
-# Docker-aware configuration
-# WAHA_URL = os.getenv("WAHA_URL", "http://localhost:3000/api/sendText")
-# # Pull from .env file via Docker environment
-# API_KEY = os.getenv("WAHA_API_KEY", "your_fallback_local_key")
-# GROUP_ID = os.getenv("WHATSAPP_GROUP_ID", "your_fallback_local_group")
 BASE_URL = os.getenv("WAHA_URL", "http://waha:3000").split("/api")[0].rstrip("/")
 API_KEY = os.getenv("WAHA_API_KEY")
 GROUP_ID = os.getenv("WHATSAPP_GROUP_ID")
