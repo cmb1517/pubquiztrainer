@@ -17,7 +17,7 @@ def run_task(task_func, name):
         logger.error(f"🚨 Critical failure in '{name}': {e}")
 
 if __name__ == "__main__":
-    logger.info("Quiz Bot Scheduler started... 🚀")
+    logger.info("Pub Quiz Bot Scheduler started... 🚀")
     logger.info("Mode: Every 2 hours (Answer 30 mins later)")
 
     schedule.every(2).hours.at(":00").do(run_task, question.main, "Question")
