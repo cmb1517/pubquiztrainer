@@ -1,8 +1,8 @@
 import json
 import os
 
-from whatsapp import send_message
-from logger import setup_logger
+from pubquiztrainer.whatsapp import send_message
+from pubquiztrainer.logger import setup_logger
 
 logger = setup_logger("answer")
 

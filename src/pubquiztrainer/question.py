@@ -1,9 +1,9 @@
 import json
 import os
 
-from quiz import get_random_quiz
-from whatsapp import send_message
-from logger import setup_logger
+from pubquiztrainer.quiz import get_random_quiz
+from pubquiztrainer.whatsapp import send_message
+from pubquiztrainer.logger import setup_logger
 
 logger = setup_logger("question")
 

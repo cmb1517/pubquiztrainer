@@ -1,7 +1,7 @@
 import time
 import random
 from functools import wraps
-from logger import setup_logger
+from pubquiztrainer.logger import setup_logger
 
 logger = setup_logger("retry")
 

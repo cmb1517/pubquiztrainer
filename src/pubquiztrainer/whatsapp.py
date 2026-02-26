@@ -1,8 +1,8 @@
 import requests
 import os
 
-from decorators import retry
-from logger import setup_logger
+from pubquiztrainer.decorators import retry
+from pubquiztrainer.logger import setup_logger
 
 logger = setup_logger("whatsapp")
 

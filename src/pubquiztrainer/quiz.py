@@ -2,7 +2,7 @@ import requests
 import html
 import random
 
-from decorators import retry
+from pubquiztrainer.decorators import retry
 
 CATEGORY_WEIGHTS = {
     9: 20,  # General Knowledge (20% chance)

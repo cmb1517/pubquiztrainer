@@ -13,4 +13,4 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 COPY . .
 
-CMD ["uv", "run", "main.py"]
+CMD ["uv", "run", "-m", "pubquiztrainer.scheduler"]
