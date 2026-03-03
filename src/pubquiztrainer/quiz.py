@@ -82,8 +82,7 @@ def get_random_quiz():
 
     except Exception as e:
         print(f"Error fetching trivia: {e}")
-        return None
-
+        raise e
 if __name__ == "__main__":
     quiz = get_random_quiz()
     if quiz:
