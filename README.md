@@ -6,6 +6,16 @@ Questions are sourced from the [Open Trivia DB](https://opentdb.com/) and delive
 
 ---
 
+## Table of contents
+
+- [How it works](#how-it-works)
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Running](#running)
+- [Project structure](#project-structure)
+
+---
+
 ## How it works
 
 The scheduler fires two jobs on a repeating cycle:
