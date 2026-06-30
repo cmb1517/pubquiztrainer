@@ -1,9 +1,13 @@
 import random
 
 from pubquiztrainer.sources import SOURCES
+from pubquiztrainer.logger import setup_logger
+
+logger = setup_logger("quiz")
 
 def get_random_quiz() -> dict:
     source = random.choice(SOURCES)
+    logger.info(f"Selected trivia source: {source.__module__}")
     return source()
 
 if __name__ == "__main__":

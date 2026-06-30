@@ -2,6 +2,9 @@ import requests
 import random
 
 from pubquiztrainer.decorators import retry
+from pubquiztrainer.logger import setup_logger
+
+logger = setup_logger("sources.thetriviaapi")
 
 CATEGORY_WEIGHTS = {
     "general_knowledge": 20,
@@ -24,6 +27,7 @@ def get_weighted_category():
 @retry(max_tries=5, initial_delay=1, backoff_factor=2)
 def get_random_quiz() -> dict:
     selected_category = get_weighted_category()
+    logger.info(f"Fetching question from The Trivia API (category: {selected_category})")
     url = f"https://the-trivia-api.com/v2/questions?limit=1&categories={selected_category}&types=text_choice"
 
     try:
@@ -32,7 +36,7 @@ def get_random_quiz() -> dict:
         data = response.json()
         
         if not data:
-            raise Exception("No results for category '{selected_category}'")
+            raise Exception(f"No results for category '{selected_category}'")
         
         result = data[0]
         correct_answer = result["correctAnswer"]
@@ -51,7 +55,7 @@ def get_random_quiz() -> dict:
         }
     
     except Exception as e:
-        print(f"[thetriviaapi] Error: {e}")
+        logger.error(f"Error fetching trivia: {e}")
         raise
 
 if __name__ == "__main__":

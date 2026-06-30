@@ -49,7 +49,7 @@ def send_message(text):
     try:
         response = requests.post(f"{BASE_URL}/api/sendText", json=payload, headers=headers)
         response.raise_for_status()
-        logger.info(f"✅ Message sent to {GROUP_ID}")
+        logger.info(f"Message sent to {GROUP_ID}")
     except Exception as e:
         logger.error(f"Error: {e}")
         if hasattr(e, 'response') and e.response is not None:

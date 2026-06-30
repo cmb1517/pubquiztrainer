@@ -31,8 +31,10 @@ def main():
     quiz['correct_letter'] = correct_letter
     quiz['formatted_options_text'] = "\n".join(formatted_options)
 
+    logger.info(f"Writing quiz state to {STATE_FILE}")
     with open(STATE_FILE, 'w') as f:
         json.dump(quiz, f)
+    logger.info("Quiz state written successfully.")
 
     message = (
         f"☀️ *DAILY PUB QUIZ* ☀️\n\n"
