@@ -3,6 +3,9 @@ import html
 import random
 
 from pubquiztrainer.decorators import retry
+from pubquiztrainer.logger import setup_logger
+
+logger = setup_logger("sources.opentrivia")
 
 CATEGORY_WEIGHTS = {
     9: 20,  # General Knowledge (20% chance)
@@ -50,6 +53,7 @@ def get_random_quiz():
     # URL = "https://opentdb.com/api.php?amount=1&category=9&difficulty=hard&type=multiple"
 
     selected_category_id = get_weighted_category()
+    logger.info(f"Fetching question from Open Trivia DB (category {selected_category_id})")
 
     URL = f"https://opentdb.com/api.php?amount=1&category={selected_category_id}&type=multiple"
     
@@ -78,16 +82,17 @@ def get_random_quiz():
             }
         
         elif data.get("response_code") in [1, 4]:
-            print(f"Category {selected_category_id} exhausted or no results. Retrying...")
+            logger.warning(f"Category {selected_category_id} exhausted or no results. Retrying...")
             raise Exception("Category Exhausted")
 
     except Exception as e:
-        print(f"Error fetching trivia: {e}")
+        logger.error(f"Error fetching trivia: {e}")
         raise e
 
 if __name__ == "__main__":
     quiz = get_random_quiz()
     if quiz:
+        print(f"Source: {quiz['source']}")
         print(f"Category: {quiz['category']} ({quiz['difficulty']})")
         print(f"Q: {quiz['question']}")
         print(f"Options: {', '.join(quiz['all_options'])}")

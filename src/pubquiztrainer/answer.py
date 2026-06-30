@@ -11,11 +11,13 @@ STATE_FILE = os.path.join(BASE_DIR, "today.json")
 
 def main():
     if not os.path.exists(STATE_FILE):
-        logger.warning("No active quiz found.")
+        logger.warning(f"No active quiz found at {STATE_FILE}; skipping answer reveal.")
         return
 
+    logger.info(f"Reading quiz state from {STATE_FILE}")
     with open(STATE_FILE, 'r') as f:
         quiz = json.load(f)
+    logger.info("Quiz state loaded successfully.")
 
     message = (
         f"💡 *THE REVEAL* 💡\n\n"
@@ -24,9 +26,10 @@ def main():
         f"Did you beat quiz bot today? 🤖"
     )
     send_message(message)
-    
+    logger.info("Quiz answer sent successfully.")
+
     os.remove(STATE_FILE)
-    logger.info("Quiz answer sent successfully!")
+    logger.info(f"Quiz state file {STATE_FILE} removed.")
 
 if __name__ == "__main__":
     main() 
