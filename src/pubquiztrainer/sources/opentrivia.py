@@ -68,6 +68,7 @@ def get_random_quiz():
             question = html.unescape(result["question"])
             correct_answer = html.unescape(result["correct_answer"])
             incorrect_answers = [html.unescape(ans) for ans in result["incorrect_answers"]]
+            category = html.unescape(result["category"])
             
             options = incorrect_answers + [correct_answer]
             random.shuffle(options)
@@ -76,7 +77,7 @@ def get_random_quiz():
                 "question": question,
                 "correct_answer": correct_answer,
                 "all_options": options,
-                "category": result["category"],
+                "category": category,
                 "difficulty": result["difficulty"].capitalize(),
                 "source": "Open Trivia DB",
             }
