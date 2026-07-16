@@ -18,12 +18,18 @@ def run_task(task_func, name):
         logger.error(f"Critical failure in '{name}': {e}")
 
 
+QUESTION_TIMES = ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00"]
+ANSWER_TIMES = ["09:30", "11:30", "13:30", "15:30", "17:30", "19:30", "21:30"]
+
+
 def main():
     logger.info("Pub Quiz Bot Scheduler started.")
-    logger.info("Mode: Question every 2 hours (Answer 30 mins later)")
+    logger.info("Mode: Question every 2 hours from 09:00 to 21:00 (Answer 30 mins later)")
 
-    schedule.every(2).hours.at(":00").do(run_task, question.main, "Question")
-    schedule.every(2).hours.at(":30").do(run_task, answer.main, "Answer")
+    for t in QUESTION_TIMES:
+        schedule.every().day.at(t).do(run_task, question.main, "Question")
+    for t in ANSWER_TIMES:
+        schedule.every().day.at(t).do(run_task, answer.main, "Answer")
 
     while True:
         try:
