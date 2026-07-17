@@ -26,13 +26,15 @@ There is no test suite currently.
 
 ## Architecture
 
-The bot sends a trivia question to a WhatsApp group every 2 hours, then reveals the answer 30 minutes later.
+The bot sends a trivia question to a WhatsApp group, then reveals the answer 30 minutes later, on a schedule defined by cron expressions in `config.yaml` (repo root).
 
 **Flow:**
 
 ```
-scheduler.py  →  every 2h at :00 → question.main()
-                 every 2h at :30 → answer.main()
+config.yaml   →  schedule.question (cron) ┐
+                  schedule.answer (cron)   │
+scheduler.py  →  APScheduler CronTrigger jobs → question.main()
+                                            └→ answer.main()
 ```
 
 1. `question.main()` calls `quiz.get_random_quiz()` (Open Trivia DB API), persists the result to `today.json` (stored inside the package directory next to the source files), then sends the formatted question via `whatsapp.send_message()`.
@@ -40,10 +42,11 @@ scheduler.py  →  every 2h at :00 → question.main()
 
 **Key design points:**
 
+- **Schedule config** — `scheduler.py` loads `config.yaml` at startup and registers `schedule.question` / `schedule.answer` (standard 5-field cron expressions) as APScheduler `CronTrigger` jobs, evaluated in `schedule.timezone` (an IANA name, e.g. `Europe/London`) so times stay correct across DST changes regardless of the container's system timezone. Change the timing by editing `config.yaml`; no code changes needed.
 - **Category weighting** — `quiz.py` defines `CATEGORY_WEIGHTS` (a dict of Open Trivia DB category IDs → relative weights). `random.choices` picks a category each call. Adjust weights there to bias question topics.
 - **Retry decorator** — `decorators.retry` (exponential backoff + jitter) wraps both `get_random_quiz` and `send_message`. Category-exhausted responses from the API (`response_code` 1 or 4) are treated as retryable exceptions.
 - **WAHA client** — `whatsapp.py` talks to [WAHA](https://waha.devlike.pro/) (self-hosted WhatsApp HTTP API). `WAHA_URL` is parsed by stripping `/api` and trailing slashes, so either a base URL or a full endpoint URL works. `ensure_session_working()` checks the session status before every send and attempts to restart it if needed, letting the retry decorator handle the actual retry.
-- **Health check** — the scheduler writes `time.time()` to `/tmp/heartbeat` on every loop tick; Docker Compose checks this file is newer than 2 minutes.
+- **Health check** — the scheduler writes `time.time()` to `/tmp/heartbeat` every 30 seconds; Docker Compose checks this file is newer than 2 minutes.
 
 ## Environment Variables
 

@@ -1,12 +1,24 @@
-import schedule
+import os
 import time
-import sys
+
+import yaml
+from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 import pubquiztrainer.question as question
 import pubquiztrainer.answer as answer
 from pubquiztrainer.logger import setup_logger
 
 logger = setup_logger("scheduler")
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+CONFIG_PATH = os.path.join(REPO_ROOT, "config.yaml")
+
+
+def load_schedule_config():
+    with open(CONFIG_PATH) as f:
+        config = yaml.safe_load(f)
+    return config["schedule"]
 
 
 def run_task(task_func, name):
@@ -18,30 +30,26 @@ def run_task(task_func, name):
         logger.error(f"Critical failure in '{name}': {e}")
 
 
-QUESTION_TIMES = ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00"]
-ANSWER_TIMES = ["09:30", "11:30", "13:30", "15:30", "17:30", "19:30", "21:30"]
+def heartbeat():
+    with open("/tmp/heartbeat", "w") as f:
+        f.write(str(time.time()))
 
 
 def main():
     logger.info("Pub Quiz Bot Scheduler started.")
-    logger.info("Mode: Question every 2 hours from 09:00 to 21:00 (Answer 30 mins later)")
 
-    for t in QUESTION_TIMES:
-        schedule.every().day.at(t).do(run_task, question.main, "Question")
-    for t in ANSWER_TIMES:
-        schedule.every().day.at(t).do(run_task, answer.main, "Answer")
+    schedule_config = load_schedule_config()
+    timezone = schedule_config["timezone"]
+    question_cron = schedule_config["question"]
+    answer_cron = schedule_config["answer"]
+    logger.info(f"Timezone: '{timezone}' | Question cron: '{question_cron}' | Answer cron: '{answer_cron}'")
 
-    while True:
-        try:
-            schedule.run_pending()
+    scheduler = BlockingScheduler(timezone=timezone)
+    scheduler.add_job(run_task, CronTrigger.from_crontab(question_cron, timezone=timezone), args=[question.main, "Question"])
+    scheduler.add_job(run_task, CronTrigger.from_crontab(answer_cron, timezone=timezone), args=[answer.main, "Answer"])
+    scheduler.add_job(heartbeat, "interval", seconds=30)
 
-            with open("/tmp/heartbeat", "w") as f:
-                f.write(str(time.time()))
-
-        except Exception as e:
-            logger.error(f"Error in scheduler loop: {e}")
-
-        time.sleep(1)
+    scheduler.start()
 
 
 if __name__ == "__main__":

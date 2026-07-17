@@ -18,12 +18,16 @@ Questions are sourced from the [Open Trivia DB](https://opentdb.com/) and delive
 
 ## How it works
 
-The scheduler fires two jobs on a repeating cycle:
+The scheduler fires two jobs on a schedule defined by cron expressions in `config.yaml`:
 
-| Time | Job |
-|------|-----|
-| `:00` every 2 hours | Fetches a weighted-random question and sends it to the group |
-| `:30` every 2 hours | Reveals the correct answer |
+```yaml
+schedule:
+  timezone: "Europe/London"   # IANA timezone; keeps times correct across BST/GMT
+  question: "0 9-21/2 * * *"  # fetch a question and send it to the group
+  answer: "30 9-21/2 * * *"   # reveal the correct answer
+```
+
+By default, questions post every 2 hours from 9am to 9pm, with the answer following 30 minutes later. Edit `config.yaml` to change the timing — no code changes needed.
 
 Category selection is weighted — General Knowledge, Geography, and History appear more often than niche categories like Anime or Video Games. Weights are configurable in `src/pubquiztrainer/quiz.py`.
 
@@ -97,8 +101,9 @@ docker run --env-file .env pubquiztrainer
 ## Project structure
 
 ```
+config.yaml         # Cron expressions controlling question/answer timing
 src/pubquiztrainer/
-├── scheduler.py    # Entry point — schedules question and answer jobs
+├── scheduler.py    # Entry point — reads config.yaml, schedules question and answer jobs
 ├── quiz.py         # Fetches questions from Open Trivia DB (weighted categories)
 ├── question.py     # Formats and sends the question; persists state to today.json
 ├── answer.py       # Reads state, sends the reveal, cleans up today.json

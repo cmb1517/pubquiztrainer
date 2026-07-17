@@ -3,3 +3,4 @@ sessions/
 today.json
 .venv/
 __pycache__/
+*.egg-info/

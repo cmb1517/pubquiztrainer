@@ -1,0 +1,8 @@
+# Cron expressions (standard 5-field: minute hour day month day_of_week)
+# controlling when questions are posted and answers are revealed.
+# `timezone` is an IANA name — using one (rather than UTC) keeps the times
+# correct across daylight saving changes (e.g. BST/GMT).
+schedule:
+  timezone: "Europe/London"
+  question: "0 9-21/2 * * *"
+  answer: "30 9-21/2 * * *"
